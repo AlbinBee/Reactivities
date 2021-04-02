@@ -45,10 +45,10 @@ button.ui.blue.basic.button {
 .ui.inverted.top.fixed.menu {
   background-color: var(--blue1);
   background-image: var(--mainGradient) !important;
-  /* background-image: linear-gradient(
-    135deg,
-    rgb(24, 42, 115) 0%,
-    rgb(33, 138, 174) 69%,
-    rgb(32, 167, 172) 89%
-  ) !important; */
+}
+.ui .container {
+  align-items: center !important;
+}
+.ui.cards {
+  justify-content: center;
 }

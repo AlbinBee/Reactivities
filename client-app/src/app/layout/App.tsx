@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment, SyntheticEvent} from 'react';
+import React, { useState, useEffect, Fragment, SyntheticEvent } from 'react';
 import Hello from '../../Components/hello';
 import { Container, Header, Icon } from 'semantic-ui-react'
 import { IActivity } from '../models/activity';
@@ -6,7 +6,9 @@ import { Navbar } from '../../Components/nav/Navbar';
 import ActivityDashboard from '../../Components/activities/dashboard/ActivityDashboard';
 import agent from '../api/agent';
 import LoadingComponent from './LoadingComponent';
-
+import { Route } from 'react-router-dom';
+import HomePage from '../../Components/HomePage';
+import Explore from '../../Components/Explore';
 
 const App = () => {
   const [activities, setActivities] = useState<IActivity[]>([]);
@@ -32,24 +34,24 @@ const App = () => {
       setActivities([...activities, activity])
       setSelectedActivity(activity);
       setEditMode(false);
-    }).then(()=> setSubmitting(false));
+    }).then(() => setSubmitting(false));
   }
-  
+
   const handleEditActivity = (activity: IActivity) => {
     setSubmitting(true);
     agent.Activities.update(activity).then(() => {
       setActivities([...activities.filter(a => a.id !== activity.id), activity])
       setSelectedActivity(activity);
       setEditMode(false);
-    }).then(()=> setSubmitting(false));
+    }).then(() => setSubmitting(false));
   }
-  
+
   const handleDeleteActivity = (event: SyntheticEvent<HTMLButtonElement>, id: string) => {
     setSubmitting(true);
     setTarget(event.currentTarget.name);
     agent.Activities.delete(id).then(() => {
       setActivities([...activities.filter(a => a.id !== id)]);
-    }).then(()=> setSubmitting(false));
+    }).then(() => setSubmitting(false));
   }
 
   useEffect(() => {
@@ -68,29 +70,33 @@ const App = () => {
     return <LoadingComponent content='Loading...' />
   }
 
-
-
   return (
     <Fragment>
       <Navbar openCreateForm={handleOpenCreateForm} />
       <Container style={{ marginTop: '7em' }}>
-        <ActivityDashboard
-          activities={activities}
-          selectActivity={handleSelectActivity}
-          selectedActivity={selectedActivity}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          setSelectedActivity={setSelectedActivity}
-          createActivity={handleCreateActivity}
-          editActivity={handleEditActivity}
-          deleteActivity={handleDeleteActivity}
-          submitting={submitting}
-          target={target}
-        />
+        <Route path='/' exact render={() => (
+          <ActivityDashboard
+            activities={activities}
+            selectActivity={handleSelectActivity}
+            selectedActivity={selectedActivity}
+            editMode={editMode}
+            setEditMode={setEditMode}
+            setSelectedActivity={setSelectedActivity}
+            createActivity={handleCreateActivity}
+            editActivity={handleEditActivity}
+            deleteActivity={handleDeleteActivity}
+            submitting={submitting}
+            target={target}
+          />
+        )} />
+      <Route path='/home' component={HomePage} />
+      <Route path='/explore' render={() => (
+        <Explore activities={activities}/>
+      )}/>
       </Container>
-      <Icon name="users" />
+      {/* <Icon name="users" />
       <Header as='h2' icon='cart' content='Uptime Guarantee' />
-      <Hello />
+      <Hello /> */}
     </Fragment>
   );
 }
